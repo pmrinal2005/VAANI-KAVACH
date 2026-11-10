@@ -89,3 +89,44 @@ export function buildNarration(payload: RecordPayload): string {
   }
   return `Approved handover. Completed: ${d.completed ?? 'nothing stated'}. Pending: ${d.pending ?? 'nothing stated'}. ${d.constraints ? 'Constraints: ' + d.constraints + '. ' : ''}Next owner ${d.next_owner ?? 'not stated'}. This is a synthetic voice.`
 }
+
+/* ------------------------------------------------------------------ */
+/* Additions: clarification question, "please check" lines, TTS text   */
+/* ------------------------------------------------------------------ */
+
+/** Focused clarification question for the first blocking issue (deterministic, never LLM-written). */
+export function buildQuestion(draft: Draft): string | null {
+  const blocker = draft.issues.find((i) => i.severity === 'block' && i.question)
+  return blocker ? `I need one detail before I can read this back. ${blocker.question}` : null
+}
+
+/** Questions raised by non-blocking warnings; shown (and spoken) with the readback so nothing hides. */
+export function checkLines(draft: Draft): string[] {
+  const seen = new Set<string>()
+  const out: string[] = []
+  for (const i of draft.issues) {
+    if (i.severity !== 'warn' || !i.question) continue
+    if (seen.has(i.question)) continue
+    seen.add(i.question)
+    out.push(i.question)
+  }
+  return out.slice(0, 3)
+}
+
+/**
+ * Convert display text into text that is friendly to the TTS engine (numbers/currency as spoken words,
+ * per the Gnani input-formatting guidance). Pure and deterministic.
+ */
+export function speechText(text: string): string {
+  let t = text
+  // "₹840 (eight hundred forty rupees)" -> keep only the spoken words
+  t = t.replace(/₹[\d,]+(?:\.\d+)?\s*\(([^)]*rupees)\)/g, '$1')
+  t = t.replace(/₹(\d[\d,]*)(?:\.(\d{1,2}))?/g, (_m, whole: string, paise?: string) => {
+    const n = Number(whole.replace(/,/g, ''))
+    if (!Number.isSafeInteger(n) || n >= 1e9) return `${whole} rupees`
+    const w = numberToEnglish(n)
+    const p = paise ? Number(paise.padEnd(2, '0')) : 0
+    return p ? `${w} rupees ${numberToEnglish(p)} paise` : `${w} rupees`
+  })
+  return t.replace(/\s+/g, ' ').trim()
+}

@@ -80,12 +80,17 @@ export interface Session {
   turns: number
   createdAt: string
   expiresAt: string
+  /** Audit trail of draft versions (version number + content digest only). */
+  versions: Array<{ version: number; digest: string; at: string; key: string }>
+  committedAt: string | null
   currentVersion: number
   readback: { version: number; digest: string; at: string } | null
   committedRecordId: string | null
   committedKey: string | null
   utterances: Utterance[]
   cloneUsed: boolean
+  /** Standard-TTS calls made in this session (application cap, not a provider limit). */
+  ttsCalls: number
   liveSlot: boolean
   extractor: ExtractorKind
 }
@@ -100,6 +105,7 @@ export interface RecordPayload {
   source_utterance_ids: string[]
   draft_version: number
   content_digest: string
+  /** `at` = server time the commit was claimed; fixed in the session document so a retried commit re-signs byte-identical content. */
   confirmation: { method: 'on_screen'; at: string; critical_ack: boolean }
   author_confirmed: true
   recipient_acknowledgement: null

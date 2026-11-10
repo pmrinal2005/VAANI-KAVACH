@@ -41,6 +41,14 @@ export function cfg() {
     supabaseUrl: (env.SUPABASE_URL || '').replace(/\/$/, ''),
     supabaseServiceKey: env.SUPABASE_SERVICE_ROLE_KEY || '',
     storeBackend: (env.STORE_BACKEND || (env.SUPABASE_URL ? 'supabase' : 'memory')) as 'memory' | 'supabase',
+    /** Memory-backed budget/session heads are per-process. Live provider calls on a multi-instance host need a durable store. */
+    allowMemoryBudget: env.ALLOW_MEMORY_BUDGET === 'true',
+    killSwitch: env.KILL_SWITCH === 'true',
+    sttFormat: (env.GNANI_STT_FORMAT || 'transcribe') as 'transcribe' | 'codemix' | 'transliterate' | 'verbatim',
+    ttsSpeed: num('GNANI_TTS_SPEED', 1.0),
+    vcSampleRate: num('GNANI_VC_SAMPLE_RATE', 22050),
+    maxUtterances: num('MAX_UTTERANCES', 12),
+    maxTtsPerSession: num('MAX_TTS_PER_SESSION', 8),
     // Application policy limits (NOT provider limits).
     sessionMaxSeconds: num('SESSION_MAX_SECONDS', 180),
     maxTurns: num('MAX_TURNS', 4),
@@ -56,6 +64,7 @@ export function cfg() {
     costEmbed: num('COST_EMBED', 6),
     tariffCalibrated: env.TARIFF_CALIBRATED === 'true',
     publicPoolCap: num('POOL_PUBLIC_CAP', POOL_CAPS.public),
+    activePool: (['contract', 'voice', 'eval', 'integration', 'rehearsal', 'public'].includes(env.BUDGET_POOL || '') ? env.BUDGET_POOL : 'public') as Exclude<PoolName, 'reserve'>,
   }
 }
 export type Cfg = ReturnType<typeof cfg>

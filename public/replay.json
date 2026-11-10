@@ -1,0 +1,321 @@
+{
+  "note": "This is a recording of the real checking engine run on synthetic data (fictitious person, no real call). It is not a live session and no speech service was used.",
+  "generatedAt": "2026-11-10T08:00:00.000Z",
+  "workflow": "money_order",
+  "steps": [
+    {
+      "say": "Ravi ke liye do cement bags, four-twenty per bag. Advance two hundred mila hai, baaki pending. Delivery kal afternoon.",
+      "notice": null,
+      "draft": {
+        "version": 1,
+        "status": "ready",
+        "fields": [
+          {
+            "key": "party",
+            "label": "For / party",
+            "display": "Ravi",
+            "basis": "stated",
+            "evidence": "Ravi ke liye",
+            "critical": false,
+            "empty": false
+          },
+          {
+            "key": "item",
+            "label": "Item",
+            "display": "cement",
+            "basis": "stated",
+            "evidence": "cement",
+            "critical": false,
+            "empty": false
+          },
+          {
+            "key": "quantity",
+            "label": "Quantity",
+            "display": "2",
+            "basis": "stated",
+            "evidence": "do",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "unit",
+            "label": "Unit",
+            "display": "bag",
+            "basis": "stated",
+            "evidence": "bags",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "unit_price",
+            "label": "Unit price",
+            "display": "₹420 per bag",
+            "basis": "stated",
+            "evidence": "four-twenty",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "total",
+            "label": "Total",
+            "display": "₹840",
+            "basis": "derived",
+            "evidence": "2 × ₹420",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "advance_received",
+            "label": "Advance received",
+            "display": "₹200",
+            "basis": "stated",
+            "evidence": "Advance two hundred",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "outstanding",
+            "label": "Outstanding",
+            "display": "₹640",
+            "basis": "derived",
+            "evidence": null,
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "payment_status",
+            "label": "Payment",
+            "display": "advance received, balance pending",
+            "basis": "stated",
+            "evidence": "baaki",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "delivery",
+            "label": "Delivery",
+            "display": "Wed, 11 Nov 2026, afternoon",
+            "basis": "stated",
+            "evidence": "kal afternoon",
+            "critical": true,
+            "empty": false
+          }
+        ],
+        "issues": [
+          {
+            "code": "kal_ambiguous",
+            "severity": "warn",
+            "field": "delivery",
+            "message": "\"kal\" can mean yesterday or tomorrow in Hindi; taken as tomorrow because this is a forward-looking request.",
+            "question": "Is this tomorrow?"
+          },
+          {
+            "code": "colloquial_price",
+            "severity": "warn",
+            "field": "unit_price",
+            "message": "\"four-twenty\" was read as ₹420. Spoken shorthand like \"four-twenty\" is easy to mishear.",
+            "question": "Is the unit price ₹420?"
+          }
+        ],
+        "digest": "4bcff192a59cdc6958331746b9846285acab794998ee5cdac63c469f61a6e307",
+        "committable": true,
+        "requiresCriticalAck": true,
+        "question": null,
+        "checks": [
+          "Is this tomorrow?",
+          "Is the unit price ₹420?"
+        ],
+        "readbackDone": false,
+        "readback": null
+      }
+    },
+    {
+      "say": "four-twenty nahi four-fifty",
+      "notice": "Changed: unit price.",
+      "draft": {
+        "version": 2,
+        "status": "ready",
+        "fields": [
+          {
+            "key": "party",
+            "label": "For / party",
+            "display": "Ravi",
+            "basis": "stated",
+            "evidence": "Ravi ke liye",
+            "critical": false,
+            "empty": false
+          },
+          {
+            "key": "item",
+            "label": "Item",
+            "display": "cement",
+            "basis": "stated",
+            "evidence": "cement",
+            "critical": false,
+            "empty": false
+          },
+          {
+            "key": "quantity",
+            "label": "Quantity",
+            "display": "2",
+            "basis": "stated",
+            "evidence": "do",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "unit",
+            "label": "Unit",
+            "display": "bag",
+            "basis": "stated",
+            "evidence": "bags",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "unit_price",
+            "label": "Unit price",
+            "display": "₹450 per bag",
+            "basis": "user_edited",
+            "evidence": "four-twenty nahi four-fifty",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "total",
+            "label": "Total",
+            "display": "₹900",
+            "basis": "derived",
+            "evidence": "2 × ₹450",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "advance_received",
+            "label": "Advance received",
+            "display": "₹200",
+            "basis": "stated",
+            "evidence": "Advance two hundred",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "outstanding",
+            "label": "Outstanding",
+            "display": "₹700",
+            "basis": "derived",
+            "evidence": null,
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "payment_status",
+            "label": "Payment",
+            "display": "advance received, balance pending",
+            "basis": "stated",
+            "evidence": "baaki",
+            "critical": true,
+            "empty": false
+          },
+          {
+            "key": "delivery",
+            "label": "Delivery",
+            "display": "Wed, 11 Nov 2026, afternoon",
+            "basis": "stated",
+            "evidence": "kal afternoon",
+            "critical": true,
+            "empty": false
+          }
+        ],
+        "issues": [
+          {
+            "code": "kal_ambiguous",
+            "severity": "warn",
+            "field": "delivery",
+            "message": "\"kal\" can mean yesterday or tomorrow in Hindi; taken as tomorrow because this is a forward-looking request.",
+            "question": "Is this tomorrow?"
+          }
+        ],
+        "digest": "99308a5d0f4f89000ae8c1f20a8f2fe2089dad2d9a37eb119c04aef097290099",
+        "committable": true,
+        "requiresCriticalAck": true,
+        "question": null,
+        "checks": [
+          "Is this tomorrow?"
+        ],
+        "readbackDone": false,
+        "readback": null
+      }
+    }
+  ],
+  "readback": {
+    "lines": [
+      "Order for Ravi: 2 bags of cement.",
+      "Unit price: ₹450 (four hundred fifty rupees) per bag.",
+      "Total: ₹900 (nine hundred rupees).",
+      "Advance received: ₹200 (two hundred rupees).",
+      "Balance pending: ₹700 (seven hundred rupees).",
+      "Payment status: advance received, balance pending.",
+      "Delivery: Wed, 11 Nov 2026, afternoon.",
+      "Confirm, correct, or cancel?"
+    ],
+    "checks": [
+      "Is this tomorrow?"
+    ]
+  },
+  "record": {
+    "payload": {
+      "id": "rec_5ef84a91c707ae4d9f2961d2",
+      "schema": "vaani-kavach/record/v1",
+      "workflow": "money_order",
+      "schema_version": "money_order/1",
+      "fields": {
+        "party": "Ravi",
+        "item": "cement",
+        "quantity": 2,
+        "unit": "bag",
+        "unit_price": 45000,
+        "total": 90000,
+        "advance_received": 20000,
+        "outstanding": 70000,
+        "payment_status": "advance received, balance pending",
+        "delivery": "2026-11-11 afternoon"
+      },
+      "field_display": {
+        "party": "Ravi",
+        "item": "cement",
+        "quantity": "2",
+        "unit": "bag",
+        "unit_price": "₹450 per bag",
+        "total": "₹900",
+        "advance_received": "₹200",
+        "outstanding": "₹700",
+        "payment_status": "advance received, balance pending",
+        "delivery": "Wed, 11 Nov 2026, afternoon"
+      },
+      "source_utterance_ids": [
+        "u_1",
+        "u_2"
+      ],
+      "draft_version": 2,
+      "content_digest": "99308a5d0f4f89000ae8c1f20a8f2fe2089dad2d9a37eb119c04aef097290099",
+      "confirmation": {
+        "method": "on_screen",
+        "at": "2026-11-10T08:00:00.000Z",
+        "critical_ack": true
+      },
+      "author_confirmed": true,
+      "recipient_acknowledgement": null,
+      "timezone": "Asia/Kolkata",
+      "created_at": "2026-11-10T08:00:00.000Z"
+    },
+    "digest": "9d14cd4ee74af509940450fc6150c64bce81a03e3f825ea7948ab56db787c5dd",
+    "signature": "bb5f52cb38fd2d64fb241b4211a72a7142cc5b6e38a7d92ea35043d639b3874070e3461cf9d357470a80daa43f193206fda4e9c73f13e286e45b559ca407520e",
+    "key_id": "df5d3e6fa59c",
+    "alg": "Ed25519",
+    "signing_note": "Signed with a development key derived from a local secret. Not a production trust anchor."
+  },
+  "keys": {
+    "df5d3e6fa59c": "ea1f9ade0c4627e09b5ba51acef0abbeb005e0ca8bf020ee52dabb46e5d6717e"
+  }
+}
