@@ -16,6 +16,10 @@ export const FIELD_LABELS: Record<string, { en: string; hi: string }> = {
   condition: { en: 'Condition', hi: 'शर्त' },
   urgency: { en: 'Urgency', hi: 'जल्दी' },
   request_status: { en: 'Status', hi: 'स्थिति' },
+  task: { en: 'Task', hi: 'काम' },
+  due: { en: 'When', hi: 'कब' },
+  instruction_kind: { en: 'Type', hi: 'प्रकार' },
+  acknowledgement: { en: 'Acknowledgement', hi: 'प्राप्ति की पुष्टि' },
   completed: { en: 'Completed', hi: 'पूरा हुआ' },
   pending: { en: 'Pending', hi: 'बाकी काम' },
   resources: { en: 'Resources', hi: 'सामान / जगह' },
@@ -29,6 +33,7 @@ export const FIELD_LABELS: Record<string, { en: string; hi: string }> = {
 export const WORKFLOW_META: Record<string, { en: string; hi: string; schema: string; committable: boolean }> = {
   money_order: { en: 'Money or order', hi: 'पैसा या ऑर्डर', schema: 'money_order/1', committable: true },
   service_request: { en: 'Service request', hi: 'सर्विस रिक्वेस्ट', schema: 'service_request/1', committable: true },
-  handover: { en: 'Instruction or handover', hi: 'निर्देश या हैंडओवर', schema: 'handover/1', committable: true },
+  instruction: { en: 'Instruction or reminder', hi: 'निर्देश या रिमाइंडर', schema: 'instruction/1', committable: true },
+  handover: { en: 'Handover', hi: 'निर्देश या हैंडओवर', schema: 'handover/1', committable: true },
   risk_review: { en: 'Risky message review', hi: 'संदिग्ध संदेश जाँच', schema: 'risk_review/1', committable: false },
 }

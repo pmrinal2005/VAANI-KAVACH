@@ -102,6 +102,17 @@ describe('TTS + voice-clone adapters', () => {
     expect((await synthesize('x', 'en-IN')).ok).toBe(false)
   })
 
+  it('accepts both documented embedding response shapes (nested OpenAPI schema and flat quick-start example)', async () => {
+    const emb = { embedding: 'AAA=', shape: [1, 768], dtype: 'torch.bfloat16' }
+    mock(() => Response.json({ success: true, message: 'ok', data: { voice_clone_embedding: emb } }))
+    const nested = await createEmbedding({ audio: audio(5000), filename: 'r.wav', mime: 'audio/wav' })
+    expect(nested.ok && nested.value).toEqual(emb)
+    mock(() => Response.json(emb))
+    const flat = await createEmbedding({ audio: audio(5000), filename: 'r.wav', mime: 'audio/wav' })
+    expect(flat.ok && flat.value).toEqual(emb)
+    expect(calls[0].url).toMatch(/\/api\/v1\/tts\/voice-clone\/embeddings$/)
+  })
+
   it('malformed embedding response is a non-definite failure', async () => {
     mock(() => Response.json({ success: true, data: {} }))
     const e = await createEmbedding({ audio: audio(5000), filename: 'r.wav', mime: 'audio/wav' })

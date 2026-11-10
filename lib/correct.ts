@@ -129,7 +129,7 @@ export function applyCorrection(base: Base, text: string, ctx: Ctx): CorrectionR
   }
 
   /* ---- delivery / requested time ("kal nahi, parso") ---- */
-  const whenKey = base.delivery ? 'delivery' : base.requested_window ? 'requested_window' : null
+  const whenKey = base.delivery ? 'delivery' : base.requested_window ? 'requested_window' : base.due ? 'due' : null
   if (whenKey && items.some(isTime)) {
     const pick = pickOldNew(items, n, isTime)
     if (pick && 'oldI' in pick) {

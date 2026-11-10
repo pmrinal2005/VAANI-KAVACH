@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest'
+import { buildNarration } from '@/lib/readback'
 import { confirm, startReadback, cancelSession, editField, submitUtterance, isErr, getRecordForSession, getSession, sessionView } from '@/lib/engine'
 import { verifySigned } from '@/lib/records'
 import { publicKeyInfo } from '@/lib/records'
@@ -331,5 +332,66 @@ describe('service request and handover', () => {
     expect(String(d.fields.resources.display)).toMatch(/store room/)
     expect(String(d.fields.constraints.display)).toMatch(/supervisor/)
     expect(d.fields.next_owner.value).toBe('Next shift')
+  })
+})
+
+describe('instruction / reminder pack', () => {
+  const SAY = 'Ramesh ko kal subah ten baje gate ka lock check karna hai, guest aane se pehle.'
+
+  it('extracts task, recipient, time and condition with evidence; never invents', async () => {
+    const sid = await start(store, 'instruction')
+    await say(store, sid, SAY)
+    const { d } = await draftOf(store, sid)
+    expect(d.fields.recipient_role.value).toBe('Ramesh')
+    expect(d.fields.recipient_role.evidence).toMatch(/Ramesh ko/)
+    expect(d.fields.due.value).toBe('2026-11-11 10:00')
+    expect(String(d.fields.task.value)).toMatch(/lock check/)
+    expect(String(d.fields.constraints.display)).toMatch(/guest aane se pehle/)
+    expect(d.status).toBe('ready')
+  })
+
+  it('is only ever prepared: acknowledgement is never claimed, and it reads back before commit', async () => {
+    const sid = await start(store, 'instruction')
+    await say(store, sid, SAY)
+    const { d } = await draftOf(store, sid)
+    expect(String(d.fields.acknowledgement.value)).toMatch(/not acknowledged/)
+    const early = await confirm(store, sid, { version: d.version, digest: d.digest }, NOW)
+    expect(isErr(early)).toBe(true) // no readback yet
+    const done = await readbackAndConfirm(store, sid, false)
+    expect(isErr(done)).toBe(false)
+    if (!isErr(done)) expect(done.record.payload.recipient_acknowledgement).toBeNull()
+  })
+
+  it('asks for the task when none is heard and detects reminders', async () => {
+    const sid = await start(store, 'instruction')
+    await say(store, sid, 'Ramesh ko')
+    const { d } = await draftOf(store, sid)
+    expect(d.status).toBe('needs_clarification')
+    expect(d.issues.some((i) => i.code === 'task_missing')).toBe(true)
+    const sid2 = await start(store, 'instruction')
+    await say(store, sid2, 'Reminder: Sita ko kal shaam paanch baje bijli ka bill dena hai')
+    const r = await draftOf(store, sid2)
+    expect(r.d.fields.instruction_kind.value).toBe('reminder')
+  })
+
+  it('a time correction changes only the time and invalidates the readback', async () => {
+    const sid = await start(store, 'instruction')
+    await say(store, sid, SAY)
+    await startReadback(store, sid, NOW)
+    await say(store, sid, 'kal nahi parso')
+    const { s, d } = await draftOf(store, sid)
+    expect(String(d.fields.due.value)).toMatch(/^2026-11-12/)
+    expect(String(d.fields.task.value)).toMatch(/lock check/)
+    expect(s.readback).toBeNull()
+  })
+
+  it('narration for an approved instruction is deterministic and disclosed', async () => {
+    const sid = await start(store, 'instruction')
+    await say(store, sid, SAY)
+    const done = await readbackAndConfirm(store, sid, false)
+    if (isErr(done)) throw new Error(done.message)
+    const n = buildNarration(done.record.payload)
+    expect(n).toMatch(/not acknowledged/)
+    expect(n).toMatch(/synthetic voice/)
   })
 })

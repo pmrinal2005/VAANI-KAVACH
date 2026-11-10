@@ -136,7 +136,7 @@ const DISPLAY_OF: Record<string, string> = {
   unit_price_paise: 'unit_price', advance_paise: 'advance_received', received_unclassified_paise: 'advance_received',
   total_stated_paise: 'total', outstanding_stated_paise: 'outstanding', paid_in_full: 'payment_status', pending_mentioned: 'payment_status',
 }
-const WHEN_KEYS = new Set(['delivery', 'requested_window'])
+const WHEN_KEYS = new Set(['delivery', 'requested_window', 'due'])
 const LIST_KEYS = new Set(['completed', 'pending', 'resources', 'constraints'])
 const dispOf = (k: string) => DISPLAY_OF[k] ?? k
 
@@ -222,12 +222,13 @@ function pruneCarried(carried: Issue[], changed: string[], base: Base): Issue[] 
   const ch = new Set(changed)
   const del = typeof base.delivery?.value === 'string' ? splitWhen(base.delivery.value as string) : {}
   const win = typeof base.requested_window?.value === 'string' ? splitWhen(base.requested_window.value as string) : {}
+  const due = typeof base.due?.value === 'string' ? splitWhen(base.due.value as string) : {}
   return carried.filter((i) => {
     if (i.field && ch.has(i.field) && i.code !== 'conflicting_value') return false
     if (i.field && ch.has(i.field) && i.code === 'conflicting_value') return false
     if (i.code === 'price_unit_mismatch' && ch.has('unit')) return false
     if (i.code === 'advance_amount_missing' && (base.advance_paise || base.received_unclassified_paise)) return false
-    if (i.code === 'when_date_missing' && ((i.field === 'delivery' && del.date) || (i.field === 'requested_window' && win.date))) return false
+    if (i.code === 'when_date_missing' && ((i.field === 'delivery' && del.date) || (i.field === 'requested_window' && win.date) || (i.field === 'due' && due.date))) return false
     return true
   })
 }
@@ -355,13 +356,15 @@ const EDIT_MAP: Record<string, { baseKey: string; kind: 'text' | 'qty' | 'rupees
   delivery: { baseKey: 'delivery', kind: 'when', workflows: ['money_order'] },
   problem: { baseKey: 'problem', kind: 'text', workflows: ['service_request'] },
   location: { baseKey: 'location', kind: 'text', workflows: ['service_request'] },
-  recipient_role: { baseKey: 'recipient_role', kind: 'text', workflows: ['service_request'] },
+  recipient_role: { baseKey: 'recipient_role', kind: 'text', workflows: ['service_request', 'instruction'] },
+  task: { baseKey: 'task', kind: 'text', workflows: ['instruction'] },
+  due: { baseKey: 'due', kind: 'when', workflows: ['instruction'] },
   condition: { baseKey: 'condition', kind: 'text', workflows: ['service_request'] },
   requested_window: { baseKey: 'requested_window', kind: 'when', workflows: ['service_request'] },
   completed: { baseKey: 'completed', kind: 'list', workflows: ['handover'] },
   pending: { baseKey: 'pending', kind: 'list', workflows: ['handover'] },
   resources: { baseKey: 'resources', kind: 'list', workflows: ['handover'] },
-  constraints: { baseKey: 'constraints', kind: 'list', workflows: ['handover'] },
+  constraints: { baseKey: 'constraints', kind: 'list', workflows: ['handover', 'instruction'] },
   next_owner: { baseKey: 'next_owner', kind: 'text', workflows: ['handover'] },
 }
 export const EDITABLE_FIELDS = Object.keys(EDIT_MAP)

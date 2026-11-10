@@ -80,6 +80,7 @@ const LANG_HINT: Record<Lang, string> = { hinglish: 'hi-IN,en-IN', en: 'en-IN,hi
 const VOCAB: Record<WorkflowId, string[]> = {
   money_order: ['advance', 'baaki', 'pending', 'delivery', 'kilo', 'bag', 'quintal', 'rupees', 'cement', 'khata', 'per bag', 'per kilo'],
   service_request: ['plumber', 'electrician', 'estimate', 'request', 'leak', 'bathroom', 'Saturday', 'repair'],
+  instruction: ['reminder', 'instruction', 'supervisor', 'next shift', 'before', 'tomorrow', 'morning', 'check', 'team'],
   handover: ['handover', 'pending', 'supervisor', 'next shift', 'inspection', 'filter', 'store room', 'restart'],
   risk_review: ['OTP', 'KYC', 'UPI', 'link', 'account', 'blocked'],
 }
@@ -170,13 +171,15 @@ export async function createEmbedding(input: { audio: Uint8Array; filename: stri
   const sent = await send(`${baseUrl()}/api/v1/tts/voice-clone/embeddings`, { method: 'POST', headers: { 'X-API-Key-ID': key() }, body: form }, c.providerTimeoutMs * 2)
   if ('fail' in sent) return sent.fail
   if (!sent.res.ok) return failFrom(sent.res)
-  let j: { success?: boolean; data?: { voice_clone_embedding?: Partial<SpeakerEmbedding> } }
+  let j: { success?: boolean; data?: { voice_clone_embedding?: Partial<SpeakerEmbedding> } } & Partial<SpeakerEmbedding>
   try {
     j = await sent.res.json()
   } catch {
     return { ok: false, status: 502, definite: false, code: 'BAD_RESPONSE', message: 'Unreadable embedding response.' }
   }
-  const e = j?.data?.voice_clone_embedding
+  // The OpenAPI schema nests the artifact under data.voice_clone_embedding; the quick-start example shows it flat.
+  // Accept both documented shapes, and nothing else.
+  const e: Partial<SpeakerEmbedding> | undefined = j?.data?.voice_clone_embedding ?? (typeof j?.embedding === 'string' ? j : undefined)
   if (!e || typeof e.embedding !== 'string' || !Array.isArray(e.shape) || typeof e.dtype !== 'string') return { ok: false, status: 502, definite: false, code: 'BAD_RESPONSE', message: 'Embedding response is missing fields.' }
   // The object is preserved exactly as returned (not decoded or reshaped).
   return { ok: true, value: { embedding: e.embedding, shape: e.shape as number[], dtype: e.dtype } }

@@ -265,7 +265,7 @@
   },
   "record": {
     "payload": {
-      "id": "rec_5ef84a91c707ae4d9f2961d2",
+      "id": "rec_5f5c2022f0c550324562687f",
       "schema": "vaani-kavach/record/v1",
       "workflow": "money_order",
       "schema_version": "money_order/1",
@@ -309,8 +309,8 @@
       "timezone": "Asia/Kolkata",
       "created_at": "2026-11-10T08:00:00.000Z"
     },
-    "digest": "9d14cd4ee74af509940450fc6150c64bce81a03e3f825ea7948ab56db787c5dd",
-    "signature": "bb5f52cb38fd2d64fb241b4211a72a7142cc5b6e38a7d92ea35043d639b3874070e3461cf9d357470a80daa43f193206fda4e9c73f13e286e45b559ca407520e",
+    "digest": "f5c3fcdd359a9908624acaaba741276881b19505b6978e470534d0df9ff954c4",
+    "signature": "c5ce933175f5bdb5a7588bb6d4aabe208dc5cb8a694149f1588cacdbe6f4952b4a85a657cb3d1c22c0133e83a3cbf90994e2374751e392b50bef727df758f709",
     "key_id": "df5d3e6fa59c",
     "alg": "Ed25519",
     "signing_note": "Signed with a development key derived from a local secret. Not a production trust anchor."

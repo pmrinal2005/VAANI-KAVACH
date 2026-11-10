@@ -62,6 +62,13 @@ export function buildReadback(draft: Draft): Readback {
     if (v(F.condition)) lines.push(`Condition: ${F.condition.display}.`)
     if (v(F.urgency)) lines.push(`Urgency: ${F.urgency.display}.`)
     lines.push('Status: request prepared. This is not a confirmed booking.')
+  } else if (wf === 'instruction') {
+    const kind = F.instruction_kind?.value === 'reminder' ? 'Reminder' : 'Instruction'
+    lines.push(`${kind}: ${v(F.task) ?? 'not stated'}.`)
+    lines.push(`For: ${v(F.recipient_role) ?? 'not stated'}.`)
+    lines.push(`When: ${v(F.due) ?? 'not stated'}.`)
+    if (v(F.constraints)) lines.push(`Condition: ${F.constraints.display}.`)
+    lines.push('Status: instruction prepared. The recipient has not acknowledged it.')
   } else if (wf === 'handover') {
     lines.push(`Completed: ${v(F.completed) ?? 'nothing stated'}.`)
     lines.push(`Pending: ${v(F.pending) ?? 'nothing stated'}.`)
@@ -86,6 +93,9 @@ export function buildNarration(payload: RecordPayload): string {
   }
   if (wf === 'service_request') {
     return `Approved request. Problem: ${d.problem ?? 'not stated'}. Send to ${d.recipient_role ?? 'not stated'}. Requested time ${d.requested_window ?? 'not stated'}. ${d.condition ? 'Condition: ' + d.condition + '. ' : ''}This is a request, not a confirmed booking. This is a synthetic voice.`
+  }
+  if (wf === 'instruction') {
+    return `Approved ${d.instruction_kind ?? 'instruction'}. ${d.task ?? 'not stated'}. For ${d.recipient_role ?? 'not stated'}. When ${d.due ?? 'not stated'}. ${d.constraints ? 'Condition: ' + d.constraints + '. ' : ''}The recipient has not acknowledged this yet. This is a synthetic voice.`
   }
   return `Approved handover. Completed: ${d.completed ?? 'nothing stated'}. Pending: ${d.pending ?? 'nothing stated'}. ${d.constraints ? 'Constraints: ' + d.constraints + '. ' : ''}Next owner ${d.next_owner ?? 'not stated'}. This is a synthetic voice.`
 }

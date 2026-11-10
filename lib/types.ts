@@ -1,4 +1,4 @@
-export type WorkflowId = 'money_order' | 'service_request' | 'handover' | 'risk_review'
+export type WorkflowId = 'money_order' | 'service_request' | 'instruction' | 'handover' | 'risk_review'
 export type Lang = 'hinglish' | 'en' | 'ta' | 'bn'
 export type Basis = 'stated' | 'derived' | 'not_stated' | 'user_edited' | 'assumed'
 export type FieldValue = string | number | string[] | null

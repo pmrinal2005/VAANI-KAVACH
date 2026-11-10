@@ -8,7 +8,7 @@ import type { UiLang } from '@/lib/client/copy'
 export const EDITABLE = new Set([
   'party', 'item', 'quantity', 'unit', 'unit_price', 'advance_received', 'delivery',
   'problem', 'location', 'recipient_role', 'condition', 'requested_window',
-  'completed', 'pending', 'resources', 'constraints', 'next_owner',
+  'completed', 'pending', 'resources', 'constraints', 'next_owner', 'task', 'due',
 ])
 
 const BASIS: Record<string, string> = { stated: 'heard', derived: 'calculated', user_edited: 'you edited', not_stated: 'not stated', assumed: 'assumed' }

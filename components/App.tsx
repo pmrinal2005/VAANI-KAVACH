@@ -360,7 +360,7 @@ export default function App() {
 
               <section aria-labelledby="plan-h" style={{ marginTop: 26 }}>
                 <h2 id="plan-h" style={{ fontSize: '1.1rem' }}>One engine, many people</h2>
-                <p className="limits">The engine is shared; occupations are workflow packs. Only the four cards above are implemented. The groups below are the <strong>planned</strong> expansion surface, not finished products.</p>
+                <p className="limits">The engine is shared; occupations are workflow packs. Only the five cards above are implemented. The groups below are the <strong>planned</strong> expansion surface, not finished products.</p>
                 <div className="planned">{PLANNED_GROUPS.map((g) => <span key={g}>○ Planned · {g}</span>)}</div>
               </section>
             </>
